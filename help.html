@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background-color: #1a237e;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+        }
+        .header {
+            background-color: #283593;
+            padding: 10px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .hamburger-menu {
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 24px;
+            width: 30px;
+        }
+        .hamburger-menu span {
+            display: block;
+            height: 3px;
+            width: 100%;
+            background-color: #ffffff;
+            transition: all 0.3s ease;
+        }
+        .header-title {
+            font-family: 'Roboto', Arial, sans-serif;
+            font-size: 24px;
+            font-weight: 300;
+        }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -250px;
+            width: 250px;
+            height: 100%;
+            background-color: #283593;
+            transition: left 0.3s ease;
+            z-index: 1001;
+        }
+        .sidebar.open {
+            left: 0;
+        }
+        .sidebar-content {
+            padding: 20px;
+            padding-top: 60px;
+        }
+        .sidebar-item {
+            padding: 10px 0;
+            cursor: pointer;
+        }
+        .sidebar-item:hover {
+            background-color: #1a237e;
+        }
+        .sidebar-item a {
+            color: #ffffff;
+            text-decoration: none;
+            display: block;
+            width: 100%;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+            padding-top: 60px;
+        }
+        .content {
+            text-align: center;
+            padding: 40px;
+            background-color: #283593;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 90%;
+            width: 300px;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        p {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="hamburger-menu" id="hamburgerMenu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="header-title">=$=</div>
+            <div style="width: 30px;"></div> <!-- Placeholder to balance the header -->
+        </div>
+    </div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-content">
+            <div class="sidebar-item"><a href="index.html">Home</a></div>
+            <div class="sidebar-item"><a href="plans.html">Plans</a></div>
+            <div class="sidebar-item"><a href="settings.html">Settings</a></div>
+            <div class="sidebar-item"><a href="help.html">Help</a></div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="content">
+            <h1>Need Help?</h1>
+            <p>Request a feature?</p>
+            <p>efexzium@gmail.com</p>
+            <p>We love feedback ❤️</p>
+        </div>
+    </div>
+
+    <script>
+        const hamburgerMenu = document.getElementById('hamburgerMenu');
+        const sidebar = document.getElementById('sidebar');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('open');
+        }
+
+        hamburgerMenu.addEventListener('click', function(event) {
+            event.stopPropagation();
+            toggleSidebar();
+        });
+
+        document.addEventListener('click', function(event) {
+            const isClickInside = sidebar.contains(event.target) || hamburgerMenu.contains(event.target);
+            if (!isClickInside && sidebar.classList.contains('open')) {
+                toggleSidebar();
+            }
+        });
+    </script>
+</body>
+</html>
