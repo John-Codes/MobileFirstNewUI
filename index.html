@@ -4,49 +4,135 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Efexzium Chat UI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
-    <div id="chatContainer">
-        <div id="header">
-            <button id="hamburgerMenu">☰</button>
-            <span>=$=</span>
+    <svg class="starry-background" width="100%" height="100%">
+        <pattern id="starPattern" x="0" y="0" width="200" height="200" patternUnits="userSpaceOnUse">
+            <circle cx="10" cy="10" r="1" fill="white" />
+            <circle cx="50" cy="30" r="0.8" fill="white" />
+            <circle cx="90" cy="70" r="1.2" fill="white" />
+            <circle cx="130" cy="100" r="0.9" fill="white" />
+            <circle cx="170" cy="50" r="1.1" fill="white" />
+            <circle cx="30" cy="140" r="1" fill="white" />
+            <circle cx="120" cy="180" r="0.8" fill="white" />
+            <circle cx="180" cy="130" r="1.2" fill="white" />
+        </pattern>
+        <rect width="100%" height="100%" fill="url(#starPattern)" />
+    </svg>
+
+    <div class="chat-container">
+        <div class="header">
+            <div class="header-content">
+                <div class="hamburger-menu" id="hamburgerMenu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <div class="header-title">=$=</div>
+                <div style="width: 30px;"></div> <!-- Placeholder to balance the header -->
+            </div>
         </div>
-        <div id="sidebar" style="display: none;">
-            <a href="index.html">Home</a>
-            <a href="plans.html">Plans</a>
-            <a href="settings.html">Settings</a>
-            <a href="help.html">Help</a>
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-item"><a href="index.html">Home</a></div>
+                <div class="sidebar-item"><a href="plans.html">Plans</a></div>
+                <div class="sidebar-item"><a href="settings.html">Settings</a></div>
+                <div class="sidebar-item"><a href="help.html">Help</a></div>
+            </div>
         </div>
-        <div id="messageList"></div>
-        <div id="inputArea">
-            <button id="uploadBtn">Upload</button>
-            <textarea id="userInput" placeholder="Type your message here..."></textarea>
-            <button id="sendBtn">Send</button>
+        <div class="message-list" id="messageList">
+            <div class="message assistant">
+                <div class="message-content">
+                    <p>Hello! How can I assist you today?</p>
+                </div>
+            </div>
+        </div>
+        <div class="message-input">
+            <div class="input-container">
+                <button class="btn" id="uploadBtn" aria-label="Upload file">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
+                    </svg>
+                    <div class="dropdown" id="uploadDropdown">
+                        <a href="#" class="dropdown-item">Upload Image</a>
+                        <a href="#" class="dropdown-item">Upload Document</a>
+                        <a href="#" class="dropdown-item">Upload Audio</a>
+                    </div>
+                </button>
+                <textarea class="input" id="userInput" placeholder="Type your message here..."></textarea>
+                <button class="btn" id="sendBtn" aria-label="Send message">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                    </svg>
+                </button>
+            </div>
         </div>
     </div>
 
     <script>
+        const textarea = document.querySelector('.input');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const uploadDropdown = document.getElementById('uploadDropdown');
         const hamburgerMenu = document.getElementById('hamburgerMenu');
         const sidebar = document.getElementById('sidebar');
         const sendButton = document.getElementById('sendBtn');
         const messageList = document.getElementById('messageList');
         const userInput = document.getElementById('userInput');
 
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+            
+            const maxHeight = window.innerHeight * 0.35;
+            if (this.scrollHeight > maxHeight) {
+                this.style.height = maxHeight + 'px';
+                this.style.overflowY = 'scroll';
+            } else {
+                this.style.overflowY = 'hidden';
+            }
+        });
+
+        window.addEventListener('resize', function() {
+            const event = new Event('input');
+            textarea.dispatchEvent(event);
+        });
+
+        uploadBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            uploadDropdown.classList.toggle('show');
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!uploadBtn.contains(e.target)) {
+                uploadDropdown.classList.remove('show');
+            }
+        });
+
+        uploadDropdown.addEventListener('click', function(e) {
+            if (e.target.classList.contains('dropdown-item')) {
+                e.preventDefault();
+                console.log('Selected:', e.target.textContent);
+                uploadDropdown.classList.remove('show');
+            }
+        });
+
         hamburgerMenu.addEventListener('click', function() {
-            sidebar.style.display = sidebar.style.display === 'none' ? 'block' : 'none';
+            sidebar.classList.toggle('open');
         });
 
         document.addEventListener('click', function(e) {
             if (!hamburgerMenu.contains(e.target) && !sidebar.contains(e.target)) {
-                sidebar.style.display = 'none';
+                sidebar.classList.remove('open');
             }
         });
+
+        sendButton.addEventListener('click', sendMessage);
 
         function getMonthlyGoal() {
             return localStorage.getItem('monthlyGoal') || '';
         }
-
-        sendButton.addEventListener('click', sendMessage);
 
         async function sendMessage() {
             const userMessage = userInput.value.trim();
@@ -91,7 +177,12 @@
 
         function addMessageToUI(role, content) {
             const messageDiv = document.createElement('div');
-            messageDiv.textContent = `${role}: ${content}`;
+            messageDiv.classList.add('message', role);
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    <p>${content}</p>
+                </div>
+            `;
             messageList.appendChild(messageDiv);
             messageList.scrollTop = messageList.scrollHeight;
         }
