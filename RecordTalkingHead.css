@@ -1,0 +1,226 @@
+body, html {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: #1a237e;
+    color: #ffffff;
+}
+.header {
+    background-color: #283593;
+    padding: 10px 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+.header-title {
+    font-family: 'Roboto', Arial, sans-serif;
+    font-size: 24px;
+    font-weight: 300;
+}
+.hamburger-menu {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 24px;
+    width: 30px;
+}
+.hamburger-menu span {
+    display: block;
+    height: 3px;
+    width: 100%;
+    background-color: #ffffff;
+    transition: all 0.3s ease;
+}
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-top: 60px;
+    min-height: calc(100% - 60px);
+}
+.content {
+    text-align: center;
+    padding: 20px;
+    background-color: #283593;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 90%;
+    width: 300px;
+}
+h1 {
+    margin-bottom: 20px;
+}
+.input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+#scriptInput {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    resize: vertical;
+    min-height: 100px;
+    max-height: 200px;
+}
+.record-button {
+    background-color: #ffffff;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s ease;
+    font-size: 30px;
+    line-height: 1;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1002;
+}
+.record-button:hover {
+    background-color: #1976D2;
+}
+.record-button span {
+    margin-top: -4px;
+}
+.video-container {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    z-index: 1000;
+}
+#videoCanvas {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+#downloadLink {
+    display: none;
+    margin-top: 10px;
+    color: #ffffff;
+    text-decoration: none;
+    background-color: #4CAF50;
+    padding: 10px 15px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+#downloadLink:hover {
+    background-color: #45a049;
+}
+.navigation-buttons {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 20px;
+    z-index: 1002;
+}
+.nav-button {
+    background-color: rgba(255, 255, 255, 0.3);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    transition: background-color 0.3s ease;
+}
+.nav-button:hover {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -250px;
+    width: 250px;
+    height: 100%;
+    background-color: #283593;
+    transition: left 0.3s ease;
+    z-index: 1001;
+}
+.sidebar.open {
+    left: 0;
+}
+.sidebar-content {
+    padding: 20px;
+    padding-top: 60px;
+}
+.sidebar-item {
+    padding: 10px 0;
+    cursor: pointer;
+}
+.sidebar-item:hover {
+    background-color: #1a237e;
+}
+.sidebar-item a {
+    color: #ffffff;
+    text-decoration: none;
+    display: block;
+    width: 100%;
+}
+@media (min-width: 768px) {
+    .video-container {
+        position: static;
+        width: 80%;
+        max-width: 800px;
+        height: 0;
+        padding-bottom: 45%;
+        margin: 20px auto;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    #videoCanvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+}
+.hamburger-menu {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 24px;
+    width: 30px;
+}
+.hamburger-menu span {
+    display: block;
+    height: 3px;
+    width: 100%;
+    background-color: #ffffff;
+    transition: all 0.3s ease;
+}

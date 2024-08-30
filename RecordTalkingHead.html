@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make a Video</title>
+    <link rel="stylesheet" href="RecordTalkingHead.css">
+
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="hamburger-menu" id="hamburgerMenu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="header-title">Talking Head Video</div>
+        </div>
+    </div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-content">
+            <div class="sidebar-item"><a href="index.html">Home</a></div>
+            <div class="sidebar-item"><a href="plans.html">Plans</a></div>
+            <div class="sidebar-item"><a href="settings.html">Settings</a></div>
+            <div class="sidebar-item"><a href="help.html">Help</a></div>
+            <div class="sidebar-item"><a href="RecordTalkingHead.html">Make Talking Head Video</a></div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="content">
+            <h1>Generated Script</h1>
+            <div class="input-container">
+                <textarea id="scriptInput" placeholder="Your video script here (up to 100 words)..."></textarea>
+            </div>
+            <a id="downloadLink" download="recorded-video.webm">Download Video</a>
+        </div>
+    </div>
+    <div class="video-container">
+        <canvas id="videoCanvas"></canvas>
+    </div>
+    <button class="record-button" id="recordButton"><span>📷</span></button>
+    <div class="navigation-buttons">
+        <button class="nav-button" id="prevButton">◀</button>
+        <button class="nav-button" id="nextButton">▶</button>
+    </div>
+
+    <script>
+
+
+
+
+ // Sidebar functionality
+ const hamburgerMenu = document.getElementById('hamburgerMenu');
+        const sidebar = document.getElementById('sidebar');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('open');
+        }
+
+        hamburgerMenu.addEventListener('click', function(event) {
+            event.stopPropagation();
+            toggleSidebar();
+        });
+
+        // Close sidebar when clicking outside
+        document.addEventListener('click', function(event) {
+            const isClickInside = sidebar.contains(event.target) || hamburgerMenu.contains(event.target);
+            if (!isClickInside && sidebar.classList.contains('open')) {
+                toggleSidebar();
+            }
+        });
+
+        const recordButton = document.getElementById('recordButton');
+        const scriptInput = document.getElementById('scriptInput');
+        const videoCanvas = document.getElementById('videoCanvas');
+        const downloadLink = document.getElementById('downloadLink');
+        const videoContainer = document.querySelector('.video-container');
+        const prevButton = document.getElementById('prevButton');
+        const nextButton = document.getElementById('nextButton');
+        const ctx = videoCanvas.getContext('2d');
+
+        let stream;
+        let mediaRecorder;
+        let recordedChunks = [];
+        let isRecording = false;
+        let scriptChunks = [];
+        let currentChunkIndex = 0;
+
+        function splitScriptIntoChunks() {
+            const words = scriptInput.value.trim().split(/\s+/);
+            scriptChunks = [];
+            for (let i = 0; i < words.length; i += 3) {
+                scriptChunks.push(words.slice(i, i + 3).join(' '));
+            }
+            currentChunkIndex = 0;
+        }
+
+        scriptInput.addEventListener('input', splitScriptIntoChunks);
+
+        prevButton.addEventListener('click', () => {
+            if (currentChunkIndex > 0) {
+                currentChunkIndex--;
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (currentChunkIndex < scriptChunks.length - 1) {
+                currentChunkIndex++;
+            }
+        });
+
+        recordButton.addEventListener('click', async function() {
+            try {
+                if (!stream) {
+                    await startCamera();
+                }
+                if (isRecording) {
+                    stopRecording();
+                } else {
+                    startRecording();
+                }
+            } catch (error) {
+                console.error('Error accessing the camera:', error);
+                alert('Unable to access the camera. Please make sure you have granted the necessary permissions.');
+            }
+        });
+
+        async function startCamera() {
+            stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            videoContainer.style.display = 'block';
+            
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            drawToCanvas();
+        }
+
+        function resizeCanvas() {
+            const containerWidth = videoContainer.offsetWidth;
+            const containerHeight = videoContainer.offsetHeight;
+            let canvasWidth, canvasHeight;
+
+            if (window.innerWidth < 768) {
+                canvasWidth = containerWidth;
+                canvasHeight = containerHeight;
+            } else {
+                const aspectRatio = 16 / 9;
+                if (containerWidth / containerHeight > aspectRatio) {
+                    canvasHeight = containerHeight;
+                    canvasWidth = canvasHeight * aspectRatio;
+                } else {
+                    canvasWidth = containerWidth;
+                    canvasHeight = canvasWidth / aspectRatio;
+                }
+            }
+
+            videoCanvas.width = canvasWidth;
+            videoCanvas.height = canvasHeight;
+        }
+
+        function drawToCanvas() {
+            const video = document.createElement('video');
+            video.srcObject = stream;
+            video.play();
+
+            function draw() {
+                if (stream) {
+                    const { videoWidth, videoHeight } = video;
+                    const { width: canvasWidth, height: canvasHeight } = videoCanvas;
+
+                    let sx, sy, sWidth, sHeight;
+
+                    if (window.innerWidth < 768) {
+                        const scale = Math.max(canvasWidth / videoWidth, canvasHeight / videoHeight);
+                        sWidth = canvasWidth / scale;
+                        sHeight = canvasHeight / scale;
+                        sx = (videoWidth - sWidth) / 2;
+                        sy = (videoHeight - sHeight) / 2;
+                    } else {
+                        sx = 0;
+                        sy = 0;
+                        sWidth = videoWidth;
+                        sHeight = videoHeight;
+                    }
+
+                    ctx.drawImage(video, sx, sy, sWidth, sHeight, 0, 0, canvasWidth, canvasHeight);
+                    
+                    // Draw text overlay
+                    ctx.fillStyle = 'white';
+                    ctx.font = 'bold 24px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    
+                    const text = scriptChunks[currentChunkIndex] || '';
+                    const textWidth = ctx.measureText(text).width;
+                    const textHeight = 40; // Approximate height of the text
+                    const padding = 10;
+                    const rectWidth = textWidth + padding * 2;
+                    const rectHeight = textHeight + padding * 2;
+                    
+                    // Position the text higher on the screen
+                    const textY = canvasHeight * 0.8; // 80% from the top of the canvas
+
+                    // Draw semi-transparent background
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+                    ctx.fillRect(
+                        canvasWidth / 2 - rectWidth / 2,
+                        textY - rectHeight / 2,
+                        rectWidth,
+                        rectHeight
+                    );
+                    
+                    // Draw text
+                    ctx.fillStyle = 'white';
+                    ctx.fillText(text, canvasWidth / 2, textY);
+
+                    requestAnimationFrame(draw);
+                }
+            }
+
+            video.onloadedmetadata = () => {
+                draw();
+            };
+        }
+
+        function startRecording() {
+            recordedChunks = [];
+            const canvasStream = videoCanvas.captureStream(30); // 30 FPS
+            const audioTrack = stream.getAudioTracks()[0];
+            const compositeStream = new MediaStream([...canvasStream.getTracks(), audioTrack]);
+            
+            mediaRecorder = new MediaRecorder(compositeStream);
+
+            mediaRecorder.ondataavailable = (event) => {
+                if (event.data.size > 0) {
+                    recordedChunks.push(event.data);
+                }
+            };
+
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                downloadLink.href = URL.createObjectURL(blob);
+                downloadLink.style.display = 'inline-block';
+            };
+
+            mediaRecorder.start();
+            isRecording = true;
+            recordButton.style.backgroundColor = '#f44336';
+            recordButton.querySelector('span').textContent = '⏹️';
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+            }
+            isRecording = false;
+            recordButton.style.backgroundColor = '#2196F3';
+            recordButton.querySelector('span').textContent = '📷';
+            
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+            }
+            
+            videoContainer.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
