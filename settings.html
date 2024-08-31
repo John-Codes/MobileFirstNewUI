@@ -51,8 +51,64 @@
                 <button id="saveButton" class="save-button">Save</button>
             </div>
         </div>
-    </div>
+        <div class="content">
+            <h2>Todo List</h2>
+            <div class="toggle-switch">
+                <span>Activate Todo List</span>
+                <label class="switch">
+                    <input type="checkbox" id="activateTodoList">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+        <div id="todoListContainer" class="content todo-list-container" style="display: none;">
+            <div class="todo-table-container">
+                <table class="todo-table">
+                    <thead>
+                        <tr>
+                            <th>Task</th>
+                            <th>Due Date</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Notes</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="todoBody">
+                        <!-- Existing todos will be inserted here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="todo-input-container">
+                <input type="text" id="todoTaskInput" class="text-input" placeholder="Enter task">
+                <select id="todoDueDateInput" class="text-input">
+                    <option value="this week">This Week</option>
+                    <option value="next week">Next Week</option>
+                    <option value="this month">This Month</option>
+                    <option value="next month">Next Month</option>
+                </select>
+                <select id="todoPriorityInput" class="text-input">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+                <select id="todoStatusInput" class="text-input">
+                    <option value="in progress">In Progress</option>
+                    <option value="complete">Complete</option>
+                    <option value="blocked">Blocked</option>
+                </select>
+                <textarea id="todoNotesInput" class="text-input" placeholder="Add notes (optional)"></textarea>
+                <button id="addTodoButton" class="save-button">Add TODO</button>
+                <button id="saveTodoLocallyButton" class="save-button">Save Locally</button>
+                <button id="downloadTodoCSVButton" class="save-button">Download as CSV</button>
+            </div>
+        </div>
+   
+    
 
     <script src="settingsMenuAndMonthGoals.js"></script>
+    <script src="todo.js"></script>
 </body>
 </html>
