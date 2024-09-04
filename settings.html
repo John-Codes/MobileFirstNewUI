@@ -26,6 +26,11 @@
             <div class="sidebar-item"><a href="help.html">Help</a></div>
         </div>
     </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    
     <div class="container">
         <div class="content">
             <h2>Settings</h2>
@@ -49,6 +54,29 @@
             <div id="monthGoalContainer" style="display: none;">
                 <input type="text" id="monthGoalInput" class="text-input" placeholder="Enter your month goal">
                 <button id="saveButton" class="save-button">Save</button>
+            </div>
+        </div>
+        <div class="content">
+            <div class="toggle-switch">
+                <h2>Debug Mode</h2>
+                <label class="switch">
+                    <input type="checkbox" id="debugModeToggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+        <div class="content">
+            <h2>YouTube Keywords</h2>
+            <div class="toggle-switch">
+                <span>Activate YouTube Keywords</span>
+                <label class="switch">
+                    <input type="checkbox" id="activateYoutubeKeywords">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div id="youtubeKeywordsContainer" style="display: none;">
+                <textarea id="youtubeKeywordsInput" class="text-area" placeholder="Enter your YouTube keywords (one per line)"></textarea>
+                <button id="saveKeywordsButton" class="save-button">Save</button>
             </div>
         </div>
         <div class="content">
